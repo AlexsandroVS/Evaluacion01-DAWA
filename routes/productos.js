@@ -1,19 +1,29 @@
-const express = require('express');
+import express from 'express';
+import {
+    getProductosAPI,
+    crearProductoAPI,
+    getProductoAPI,
+    actualizarProductoAPI,
+    eliminarProductoAPI,
+    getProductosView,
+    crearProductoForm,
+    getProductoView,
+    editarProductoForm
+} from '../controllers/productosController.js';
+
 const router = express.Router();
-const productosController = require('../controllers/productosController');
 
-// Rutas para API REST 
-router.get('/api', productosController.getProductosAPI);
-router.post('/api', productosController.crearProductoAPI);
+// API REST Routes
+router.get('/api', getProductosAPI);
+router.post('/api', crearProductoAPI);
+router.get('/api/:id', getProductoAPI);
+router.put('/api/:id', actualizarProductoAPI);
+router.delete('/api/:id', eliminarProductoAPI);
 
-router.get('/api/:id', productosController.getProductoAPI);
-router.put('/api/:id', productosController.actualizarProductoAPI);
-router.delete('/api/:id', productosController.eliminarProductoAPI);
+// View Routes
+router.get('/', getProductosView);
+router.get('/crear', crearProductoForm);
+router.get('/:id', getProductoView);
+router.get('/:id/editar', editarProductoForm);
 
-// Rutas para vistas 
-router.get('/', productosController.getProductosView);
-router.get('/crear', productosController.crearProductoForm);
-router.get('/:id', productosController.getProductoView);
-router.get('/:id/editar', productosController.editarProductoForm);
-
-module.exports = router;
+export default router;

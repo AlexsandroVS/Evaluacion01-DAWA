@@ -1,9 +1,12 @@
-require('dotenv').config();
-const express = require('express');
-const connectDB = require('./config/db');
-const productosRoutes = require('./routes/productos');
-const path = require('path');
-const fetch = require('node-fetch'); // Necesario para consumir nuestra propia API
+import 'dotenv/config';
+import express from 'express';
+import connectDB from './config/db.js';
+import productosRoutes from './routes/productos.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Conexión a la base de datos
 connectDB();
@@ -27,22 +30,6 @@ app.use('/productos', productosRoutes);
 // Ruta principal
 app.get('/', (req, res) => {
   res.redirect('/productos');
-});
-
-// Middleware para manejo de errores de API
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  
-  // Si es una petición API, responder con JSON
-  if (req.originalUrl.startsWith('/productos/api')) {
-    return res.status(500).json({
-      success: false,
-      error: 'Error en el servidor'
-    });
-  }
-  
-  // Para rutas de vistas, renderizar una página de error
-  res.status(500).render('error', { error: err.message });
 });
 
 const PORT = process.env.PORT || 3000;

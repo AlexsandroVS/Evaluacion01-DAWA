@@ -1,8 +1,8 @@
-const Producto = require('../models/Producto');
-const fetch = require('node-fetch').default;
+import Producto from '../models/Producto.js';
+import fetch from 'node-fetch';
 
 // Controladores para VISTAS (frontend integrado)
-exports.getProductosView = async (req, res, next) => {
+export const getProductosView = async (req, res, next) => {
   try {
     const response = await fetch(`http://localhost:${process.env.PORT || 3000}/productos/api`);
     
@@ -20,7 +20,7 @@ exports.getProductosView = async (req, res, next) => {
   }
 };
 
-exports.crearProductoForm = (req, res) => {
+export const crearProductoForm = (req, res) => {
   const categorias = ['Electrónica', 'Ropa', 'Alimentos', 'Hogar', 'Juguetes'];
   res.render('productos/crear', { 
     categorias,
@@ -28,7 +28,7 @@ exports.crearProductoForm = (req, res) => {
   });
 };
 
-exports.getProductoView = async (req, res, next) => {
+export const getProductoView = async (req, res, next) => {
   try {
     const response = await fetch(`http://localhost:${process.env.PORT || 3000}/productos/api/${req.params.id}`);
     
@@ -57,7 +57,7 @@ exports.getProductoView = async (req, res, next) => {
   }
 };
 
-exports.editarProductoForm = async (req, res, next) => {
+export const editarProductoForm = async (req, res, next) => {
   try {
     const response = await fetch(`http://localhost:${process.env.PORT || 3000}/productos/api/${req.params.id}`);
     
@@ -87,8 +87,9 @@ exports.editarProductoForm = async (req, res, next) => {
     next(err);
   }
 };
+
 // Controladores para API REST
-exports.getProductosAPI = async (req, res, next) => {
+export const getProductosAPI = async (req, res, next) => {
   try {
     const productos = await Producto.find().sort({ createdAt: -1 });
     res.json({
@@ -101,7 +102,7 @@ exports.getProductosAPI = async (req, res, next) => {
   }
 };
 
-exports.getProductoAPI = async (req, res, next) => {
+export const getProductoAPI = async (req, res, next) => {
   try {
     const producto = await Producto.findById(req.params.id);
     if (!producto) {
@@ -119,7 +120,7 @@ exports.getProductoAPI = async (req, res, next) => {
   }
 };
 
-exports.crearProductoAPI = async (req, res, next) => {
+export const crearProductoAPI = async (req, res, next) => {
   try {
     const { nombre, descripcion, precio, stock, categoria } = req.body;
     
@@ -142,7 +143,7 @@ exports.crearProductoAPI = async (req, res, next) => {
   }
 };
 
-exports.actualizarProductoAPI = async (req, res, next) => {
+export const actualizarProductoAPI = async (req, res, next) => {
   try {
     const { nombre, descripcion, precio, stock, categoria } = req.body;
     
@@ -168,7 +169,7 @@ exports.actualizarProductoAPI = async (req, res, next) => {
   }
 };
 
-exports.eliminarProductoAPI = async (req, res, next) => {
+export const eliminarProductoAPI = async (req, res, next) => {
   try {
     const producto = await Producto.findByIdAndDelete(req.params.id);
     if (!producto) {
