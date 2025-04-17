@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('./partials/head') %>
+  <title>Error</title>
+</head>
+<body>
+  <%- include('./partials/nav', { currentPath: '/error' }) %>
+  
+  <main class="container">
+    <div class="card">
+      <div class="card-header">
+        <h1 class="card-title">Error</h1>
+      </div>
+      <div class="p-8 text-center">
+        <div class="text-danger text-xl mb-4">
+          <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+          <p><%= error %></p>
+        </div>
+        <a href="/productos" class="btn btn-primary">
+          <i class="fas fa-arrow-left btn-icon"></i>
+          Volver a Productos
+        </a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

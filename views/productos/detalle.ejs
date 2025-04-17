@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head') %>
+</head>
+<body>
+  <%- include('../partials/nav', { currentPath: '/productos' }) %>
+  
+  <main class="container animate-in">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h1 class="card-title">Detalles del Producto</h1>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="badge <%= producto.stock > 10 ? 'badge-success' : 'badge-warning' %>">
+              <%= producto.stock %> unidades disponibles
+            </span>
+            <span class="text-gray-500 text-sm">ID: <%= producto._id %></span>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <a href="/productos/<%= producto._id %>/editar" class="btn btn-primary">
+            <i class="fas fa-edit btn-icon"></i>
+            Editar
+          </a>
+          <a href="/productos" class="btn btn-outline">
+            <i class="fas fa-arrow-left btn-icon"></i>
+            Volver
+          </a>
+        </div>
+      </div>
+
+      <div class="product-detail-grid">
+        <!-- Sección de Información Principal -->
+        <div class="product-info-card">
+          <div class="info-header">
+            <h2><%= producto.nombre %></h2>
+            <div class="price-tag">
+              S/.<%= producto.precio.toFixed(2) %>
+            </div>
+          </div>
+          
+          <div class="info-category">
+            <i class="fas fa-tag"></i>
+            <%= producto.categoria %>
+          </div>
+          
+          <div class="info-description">
+            <h3>Descripción</h3>
+            <p><%= producto.descripcion %></p>
+          </div>
+        </div>
+
+        <!-- Sección de Estadísticas -->
+        <div class="product-stats-card">
+          <h3>Información Adicional</h3>
+          
+          <div class="stats-grid">
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="fas fa-box-open"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-label">Stock Actual</div>
+                <div class="stat-value"><%= producto.stock %> unidades</div>
+              </div>
+            </div>
+            
+            <div class="stat-item">
+              <div class="stat-icon">
+                <i class="fas fa-calendar-alt"></i>
+              </div>
+              <div class="stat-info">
+                <div class="stat-label">Fecha de Registro</div>
+                <div class="stat-value">
+                    <% if (producto.createdAt) { %>
+                      <%= new Date(producto.createdAt).toLocaleDateString('es-ES', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      }) %>
+                    <% } else { %>
+                      No disponible
+                    <% } %>
+                  </div>
+              </div>
+            </div>
+            
+          </div>
+          
+          <div class="danger-zone">
+            <h3>Zona de Peligro</h3>
+            <p>Esta acción no puede deshacerse. Todos los datos asociados serán eliminados permanentemente.</p>
+            <button id="eliminarProductoBtn" class="btn btn-danger">
+              <i class="fas fa-trash btn-icon"></i>
+              Eliminar Producto
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('eliminarProductoBtn').addEventListener('click', async () => {
+      if (confirm('¿Está seguro que desea eliminar este producto permanentemente?')) {
+        try {
+          const response = await fetch(`/productos/api/${'<%= producto._id %>'}`, {
+            method: 'DELETE'
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            window.location.href = '/productos';
+          } else {
+            alert('Error al eliminar el producto: ' + (data.error || 'Error desconocido'));
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Error al conectar con el servidor');
+        }
+      }
+    });
+  </script>
+</body>
+</html>

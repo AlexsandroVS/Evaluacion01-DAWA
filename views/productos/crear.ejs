@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head') %>
+</head>
+<body>
+  <%- include('../partials/nav', { currentPath: '/productos/crear' }) %>
+  
+  <main class="container animate-in">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h1 class="card-title">Nuevo Producto</h1>
+          <p class="text-gray-500">Complete todos los campos requeridos</p>
+        </div>
+        <a href="/productos" class="btn btn-outline">
+          <i class="fas fa-arrow-left btn-icon"></i>
+          Volver
+        </a>
+      </div>
+
+      <form id="crearProductoForm" class="form-grid">
+        <!-- Columna Izquierda -->
+        <div class="form-col">
+          <div class="form-group">
+            <label for="nombre" class="form-label">
+              <span>Nombre del Producto</span>
+              <span class="text-danger">*</span>
+            </label>
+            <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ej: Laptop HP EliteBook" required>
+          </div>
+
+          <div class="form-group">
+            <label for="categoria" class="form-label">
+              <span>Categoría</span>
+              <span class="text-danger">*</span>
+            </label>
+            <select id="categoria" name="categoria" class="form-control" required>
+              <option value="" disabled selected>Seleccione una categoría</option>
+              <% categorias.forEach(categoria => { %>
+                <option value="<%= categoria %>"><%= categoria %></option>
+              <% }) %>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="precio" class="form-label">
+              <span>Precio Unitario</span>
+              <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-prefix">S/.</span>
+              <input type="number" id="precio" name="precio" min="0" step="0.01" class="form-control" placeholder="0.00" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Columna Derecha -->
+        <div class="form-col">
+          <div class="form-group">
+            <label for="stock" class="form-label">
+              <span>Cantidad en Stock</span>
+              <span class="text-danger">*</span>
+            </label>
+            <input type="number" id="stock" name="stock" min="0" class="form-control" placeholder="Ej: 100" required>
+          </div>
+
+          <div class="form-group">
+            <label for="descripcion" class="form-label">
+              <span>Descripción Completa</span>
+              <span class="text-danger">*</span>
+            </label>
+            <textarea id="descripcion" name="descripcion" class="form-control" rows="5" placeholder="Incluya características relevantes..." required></textarea>
+          </div>
+        </div>
+
+        <!-- Acciones del Formulario -->
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save btn-icon"></i>
+            Guardar Producto
+          </button>
+          <a href="/productos" class="btn btn-outline">
+            <i class="fas fa-times btn-icon"></i>
+            Cancelar
+          </a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById('crearProductoForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = {
+        nombre: e.target.nombre.value,
+        descripcion: e.target.descripcion.value,
+        precio: parseFloat(e.target.precio.value),
+        stock: parseInt(e.target.stock.value),
+        categoria: e.target.categoria.value
+      };
+      
+      try {
+        const response = await fetch('/productos/api', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          window.location.href = '/productos';
+        } else {
+          alert('Error al crear el producto: ' + (data.error || 'Error desconocido'));
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        alert('Error al conectar con el servidor');
+      }
+    });
+  </script>
+
+  <style>
+    .form-col {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .form-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 1rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--gray-200);
+      margin-top: 1rem;
+    }
+    
+    .input-group {
+      display: flex;
+      align-items: center;
+    }
+    
+    .input-prefix {
+      padding: 0.875rem 0.75rem;
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      border-right: none;
+      border-radius: var(--rounded-sm) 0 0 var(--rounded-sm);
+      color: var(--gray-500);
+    }
+    
+    .input-group .form-control {
+      border-radius: 0 var(--rounded-sm) var(--rounded-sm) 0;
+    }
+    
+    .text-danger {
+      color: var(--danger);
+    }
+  </style>
+</body>
+</html>

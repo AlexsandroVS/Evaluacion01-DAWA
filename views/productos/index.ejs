@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <%- include('../partials/head') %>
+</head>
+<body>
+  <%- include('../partials/nav', { currentPath: '/productos' }) %>
+  
+  <main class="container animate-in">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <h1 class="card-title">Gestión de Productos</h1>
+          <p class="text-gray-500 mt-1">Total: <%= productos.length %> productos</p>
+        </div>
+        <a href="/productos/crear" class="btn btn-primary">
+          <i class="fas fa-plus btn-icon"></i>
+          Nuevo Producto
+        </a>
+      </div>
+
+      <% if (productos.length > 0) { %>
+        <div class="table-wrapper">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Detalles</th>
+                <th>Stock</th>
+                <th>Precio</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% productos.forEach(producto => { %>
+                <tr data-id="<%= producto._id %>">
+                  <td>
+                    <a href="/productos/<%= producto._id %>" class="product-name-link">
+                      <div class="font-medium"><%= producto.nombre %></div>
+                      <div class="text-gray-500 text-sm"><%= producto.categoria %></div>
+                    </a>
+                  </td>
+                  <td class="text-gray-500 max-w-xs"><%= producto.descripcion %></td>
+                  <td>
+                    <div class="badge <%= producto.stock > 10 ? 'badge-success' : 'badge-warning' %>">
+                      <%= producto.stock %> en stock
+                    </div>
+                  </td>
+                  <td class="font-medium">S./<%= producto.precio.toFixed(2) %></td>
+                  <td>
+                    <div class="flex gap-2">
+                      <a href="/productos/<%= producto._id %>/editar" class="btn btn-primary">
+                        <i class="fas fa-edit btn-icon"></i>
+                      </a>
+                      <button class="btn btn-danger eliminar-producto-btn">
+                        <i class="fas fa-trash btn-icon"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="p-8 text-center">
+          <div class="text-gray-500 text-xl mb-4">
+            <i class="fas fa-box-open text-4xl mb-4"></i>
+            <p>No hay productos registrados</p>
+          </div>
+          <a href="/productos/crear" class="btn btn-primary">
+            <i class="fas fa-plus btn-icon"></i>
+            Crear primer producto
+          </a>
+        </div>
+      <% } %>
+    </div>
+  </main>
+
+  <script>
+    document.querySelectorAll('.eliminar-producto-btn').forEach(btn => {
+      btn.addEventListener('click', async function() {
+        const row = this.closest('tr');
+        const productId = row.dataset.id;
+        
+        if (confirm('¿Está seguro que desea eliminar este producto?')) {
+          try {
+            const response = await fetch(`/productos/api/${productId}`, {
+              method: 'DELETE'
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+              row.remove();
+              // Actualizar el contador de productos
+              const countElement = document.querySelector('.text-gray-500.mt-1');
+              if (countElement) {
+                const currentCount = parseInt(countElement.textContent.match(/\d+/)[0]);
+                countElement.textContent = `Total: ${currentCount - 1} productos`;
+              }
+            } else {
+              alert('Error al eliminar el producto: ' + (data.error || 'Error desconocido'));
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            alert('Error al conectar con el servidor');
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

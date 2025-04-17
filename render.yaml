@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: ecommerce-app
+    runtime: node
+    buildCommand: pnpm install && pnpm run build
+    startCommand: pnpm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGO_URI
+        fromDatabase:
+          name: mongodb
+          property: connectionString
+      - key: PORT
+        value: 3000
+    healthCheckPath: /productos/api
