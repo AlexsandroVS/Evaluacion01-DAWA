@@ -1,0 +1,28 @@
+=== INSTALACIÓN DEL PROYECTO ===
+
+Requisitos previos:
+- Node.js v18+
+- pnpm instalado (npm install -g pnpm)
+- MongoDB Atlas o local
+
+Pasos de instalación:
+
+1. Clonar el repositorio:
+git clone [URL_DEL_REPOSITORIO]
+cd [NOMBRE_CARPETA_PROYECTO]
+
+2. Instalar dependencias:
+pnpm install
+
+3. Configurar variables de entorno:
+Crear archivo .env en la raíz con:
+MONGO_URI=[TU_URL_MONGODB]
+PORT=3000
+NODE_ENV=development
+
+4. Iniciar la aplicación:
+Modo desarrollo: pnpm dev
+Modo producción: pnpm start
+
+5. Acceder a la aplicación:
+http://localhost:3000
